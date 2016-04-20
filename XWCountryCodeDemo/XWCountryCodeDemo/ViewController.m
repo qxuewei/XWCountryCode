@@ -9,7 +9,8 @@
 #import "ViewController.h"
 #import "XWCountryCodeController.h"
 
-@interface ViewController ()
+@interface ViewController ()<XWCountryCodeControllerDelegate>
+@property (weak, nonatomic) IBOutlet UILabel *countryCodeLB;
 
 @end
 
@@ -22,7 +23,20 @@
 - (IBAction)countryCode:(UIButton *)sender {
     NSLog(@"进入选择国际代码界面");
     XWCountryCodeController *CountryCodeVC = [[XWCountryCodeController alloc] init];
+    CountryCodeVC.deleagete = self;
+    
+    //block
+    [CountryCodeVC toReturnCountryCode:^(NSString *countryCodeStr) {
+        [self.countryCodeLB setText:countryCodeStr];
+    }];
+    
     [self presentViewController:CountryCodeVC animated:YES completion:nil];
+}
+
+//1.代理传值
+#pragma mark - XWCountryCodeControllerDelegate
+-(void)returnCountryCode:(NSString *)countryCode{
+    [self.countryCodeLB setText:countryCode];
 }
 
 - (void)didReceiveMemoryWarning {

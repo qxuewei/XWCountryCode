@@ -12,7 +12,7 @@
 #define CURR_LANG ([[NSLocale preferredLanguages] objectAtIndex:0])
 #define LanguageIsEnglish ([CURR_LANG isEqualToString:@"en-US"] || [CURR_LANG isEqualToString:@"en-CA"] || [CURR_LANG isEqualToString:@"en-GB"] || [CURR_LANG isEqualToString:@"en-CN"] || [CURR_LANG isEqualToString:@"en"])
 
-@interface XWCountryCodeController()<UITableViewDataSource,UITableViewDelegate,UISearchBarDelegate,UISearchDisplayDelegate, UISearchBarDelegate,UISearchResultsUpdating>{
+@interface XWCountryCodeController()<UITableViewDataSource,UITableViewDelegate,UISearchBarDelegate,UISearchDisplayDelegate>{
     //国际代码主tableview
     UITableView *countryCodeTableView;
     //搜索
@@ -192,7 +192,29 @@
     return [indexArray objectAtIndex:section];
 }
 
+#pragma mark - 选择国际获取代码
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+    NSLog(@"选择相应国家,输出:%@",cell.textLabel.text);
+    
+//    //1.代理传值
+//    if (self.deleagete && [self.deleagete respondsToSelector:@selector(returnCountryCode:)]) {
+//        [self.deleagete returnCountryCode:cell.textLabel.text];
+//    }
+//    [self dismissViewControllerAnimated:YES completion:nil];
+    
+    //2.block传值
+    if (self.returnCountryCodeBlock != nil) {
+        self.returnCountryCodeBlock(cell.textLabel.text);
+    }
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
 
+
+#pragma mark - 代理传值
+-(void)toReturnCountryCode:(returnCountryCodeBlock)block{
+    self.returnCountryCodeBlock = block;
+}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

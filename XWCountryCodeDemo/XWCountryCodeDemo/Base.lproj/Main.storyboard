@@ -3,6 +3,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
         <!--View Controller-->
@@ -40,31 +41,71 @@
                                     <action selector="countryCode:" destination="BYZ-38-t0r" eventType="touchUpInside" id="eI2-2f-FdG"/>
                                 </connections>
                             </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="国家代码" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="p97-KM-OOQ">
+                                <rect key="frame" x="-42" y="-21" width="42" height="21"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="32" id="D3r-TW-Mzg"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="D3r-TW-Mzg"/>
+                                    </mask>
+                                </variation>
+                                <variation key="widthClass=compact">
+                                    <mask key="constraints">
+                                        <include reference="D3r-TW-Mzg"/>
+                                    </mask>
+                                </variation>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="p97-KM-OOQ" firstAttribute="top" secondItem="8UD-nQ-mh5" secondAttribute="bottom" constant="8" id="2VA-Dn-3Lb">
+                                <variation key="widthClass=compact" constant="90"/>
+                            </constraint>
+                            <constraint firstItem="p97-KM-OOQ" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="4vq-ij-KSy">
+                                <variation key="widthClass=compact" constant="-4"/>
+                            </constraint>
+                            <constraint firstAttribute="trailingMargin" secondItem="p97-KM-OOQ" secondAttribute="trailing" id="BWl-lp-QZ6">
+                                <variation key="widthClass=compact" constant="-4"/>
+                            </constraint>
                             <constraint firstItem="8UD-nQ-mh5" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="yUK-Gr-9aK"/>
                             <constraint firstItem="8UD-nQ-mh5" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="zFh-OF-qR8"/>
                         </constraints>
                         <variation key="default">
                             <mask key="subviews">
                                 <exclude reference="8UD-nQ-mh5"/>
+                                <exclude reference="p97-KM-OOQ"/>
                             </mask>
                             <mask key="constraints">
                                 <exclude reference="yUK-Gr-9aK"/>
                                 <exclude reference="zFh-OF-qR8"/>
+                                <exclude reference="2VA-Dn-3Lb"/>
+                                <exclude reference="4vq-ij-KSy"/>
+                                <exclude reference="BWl-lp-QZ6"/>
                             </mask>
                         </variation>
                         <variation key="widthClass=compact">
                             <mask key="subviews">
                                 <include reference="8UD-nQ-mh5"/>
+                                <include reference="p97-KM-OOQ"/>
                             </mask>
                             <mask key="constraints">
                                 <include reference="yUK-Gr-9aK"/>
                                 <include reference="zFh-OF-qR8"/>
+                                <include reference="2VA-Dn-3Lb"/>
+                                <include reference="4vq-ij-KSy"/>
+                                <include reference="BWl-lp-QZ6"/>
                             </mask>
                         </variation>
                     </view>
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
+                    <connections>
+                        <outlet property="countryCodeLB" destination="p97-KM-OOQ" id="Vcp-gc-6KX"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
