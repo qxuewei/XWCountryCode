@@ -78,15 +78,14 @@
     
     //判断当前系统语言
     if (LanguageIsEnglish) {
-        sortedNameDict = [NSDictionary dictionaryWithContentsOfFile:plistPathEN];
+        sortedNameDict = [[NSDictionary alloc] initWithContentsOfFile:plistPathEN];
     }else{
-        sortedNameDict = [NSDictionary dictionaryWithContentsOfFile:plistPathCH];
+        sortedNameDict = [[NSDictionary alloc] initWithContentsOfFile:plistPathCH];
     }
     
-    indexArray = [sortedNameDict allKeys];
-    indexArray = [indexArray sortedArrayUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
+    indexArray = [[NSArray alloc] initWithArray:[[sortedNameDict allKeys] sortedArrayUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
         return [obj1 compare:obj2];
-    }];
+    }]];
     NSLog(@"sortedChnamesDict %@",sortedNameDict);
 
 }
