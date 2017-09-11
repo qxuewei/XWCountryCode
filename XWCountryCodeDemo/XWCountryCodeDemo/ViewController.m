@@ -10,7 +10,7 @@
 #import "XWCountryCodeController.h"
 
 @interface ViewController ()<XWCountryCodeControllerDelegate>
-@property (weak, nonatomic) IBOutlet UILabel *countryCodeLB;
+@property (strong, nonatomic) IBOutlet UILabel *countryCodeLB;
 
 @end
 
