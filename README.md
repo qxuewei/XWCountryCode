@@ -7,17 +7,26 @@
 
 三行代码集成国家区号选择功能
 
-<br>1.导入XWCountryCode类</br>
-<br>2.在需要选择国家代码的事件中
-<code><pre>
-  XWCountryCodeController *CountryCodeVC = [[XWCountryCodeController alloc] init];
-    //CountryCodeVC.deleagete = self;
-    //block
-    [CountryCodeVC toReturnCountryCode:^(NSString *countryCodeStr) {
-        //在此处实现最终选择后的界面处理
-        [self.countryCodeLB setText:countryCodeStr];
-    }];
-    [self presentViewController:CountryCodeVC animated:YES completion:nil];
-</code></pre>
 
-界面传值提供了代理和block两种方式,自由选择
+```objc
+    XWCountryCodeController *countryCodeVC = [[XWCountryCodeController alloc] init];
+
+    /// 使用代理回调
+    //    countryCodeVC.deleagete = self;
+    
+    
+    /// 使用 Block 回调
+    __weak __typeof(self)weakSelf = self;
+    countryCodeVC.returnCountryCodeBlock = ^(NSString *countryName, NSString *code) {
+        __strong __typeof(weakSelf) strongSelf = weakSelf;
+        strongSelf->showCodeLB.text = [NSString stringWithFormat:@"国家: %@  代码: %@",countryName,code];
+    };
+
+    [self.navigationController pushViewController:countryCodeVC animated:YES];
+
+```
+
+#### 更新 - 2019.10.30
+* UISearchController 替换 UISearchDisplayController 实现搜索
+
+
