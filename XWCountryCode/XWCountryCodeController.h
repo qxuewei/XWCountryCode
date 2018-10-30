@@ -8,27 +8,27 @@
 
 #import <UIKit/UIKit.h>
 
-//1.代理传值
+typedef void(^returnCountryCodeBlock) (NSString *countryName, NSString *code);
+
 @protocol XWCountryCodeControllerDelegate <NSObject>
 
 @optional
--(void)returnCountryCode:(NSString *)countryCode;
+
+/**
+ Delegate 回调所选国家代码
+
+ @param countryName 所选国家
+ @param code 所选国家代码
+ */
+-(void)returnCountryName:(NSString *)countryName code:(NSString *)code;
 
 @end
 
-//2.block传值  typedef void(^returnBlock)(NSString *showText);
-typedef void(^returnCountryCodeBlock) (NSString *countryCodeStr);
 
 @interface XWCountryCodeController : UIViewController
 
-//代理
-@property (nonatomic, assign) id<XWCountryCodeControllerDelegate> deleagete;
+@property (nonatomic, weak) id<XWCountryCodeControllerDelegate> deleagete;
 
-//block
-//block声明属性
 @property (nonatomic, copy) returnCountryCodeBlock returnCountryCodeBlock;
-//block声明方法
--(void)toReturnCountryCode:(returnCountryCodeBlock)block;
-
 
 @end

@@ -12,222 +12,192 @@
 #define CURR_LANG ([[NSLocale preferredLanguages] objectAtIndex:0])
 #define LanguageIsEnglish ([CURR_LANG isEqualToString:@"en-US"] || [CURR_LANG isEqualToString:@"en-CA"] || [CURR_LANG isEqualToString:@"en-GB"] || [CURR_LANG isEqualToString:@"en-CN"] || [CURR_LANG isEqualToString:@"en"])
 
-@interface XWCountryCodeController()<UITableViewDataSource,UITableViewDelegate,UISearchBarDelegate,UISearchDisplayDelegate>{
-    //国际代码主tableview
-    UITableView *countryCodeTableView;
-    //搜索
-    UISearchDisplayController *searchController;
-//    UISearchController *searchController;
-    UISearchBar *searchBar;
-    //代码字典
-    NSDictionary *sortedNameDict; //代码字典
-    
-    NSArray *indexArray;
-    NSMutableArray *searchResultValuesArray;
-    
-    
+@interface XWCountryCodeController () <UITableViewDataSource,UITableViewDelegate,UISearchResultsUpdating> {
+    UITableView *_tableView;
+    UISearchController *_searchController;
+    NSDictionary *_sortedNameDict;
+    NSArray *_indexArray;
+    NSMutableArray *_results;
 }
-
-@end
-
-@interface XWCountryCodeController ()
-
 @end
 
 @implementation XWCountryCodeController
 
+#pragma mark - system
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
-    
-    //背景
-    [self.view setBackgroundColor:[UIColor whiteColor]];
-    
-    //顶部标题
-    [self.navigationItem setTitle:@"国家代码"];
-    
-    //创建子视图
+    self.view.backgroundColor = [UIColor whiteColor];
+    self.navigationItem.title = @"国家代码";
     [self creatSubviews];
 }
+
+#pragma mark - private
  //创建子视图
--(void)creatSubviews{
-    searchResultValuesArray = [[NSMutableArray alloc] init];
+- (void)creatSubviews{
+    _results = [NSMutableArray arrayWithCapacity:1];
     
-    countryCodeTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 20, self.view.bounds.size.width, self.view.bounds.size.height-20) style:UITableViewStylePlain];
-    [self.view addSubview:countryCodeTableView];
-    //自动调整自己的宽度，保证与superView左边和右边的距离不变。
-    [countryCodeTableView setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
-    [countryCodeTableView setDataSource:self];
-    [countryCodeTableView setDelegate:self];
-    [countryCodeTableView setSectionIndexBackgroundColor:[UIColor clearColor]];
+    _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 20, self.view.bounds.size.width, self.view.bounds.size.height-20) style:UITableViewStylePlain];
+    [self.view addSubview:_tableView];
+    _tableView.delegate = self;
+    _tableView.dataSource = self;
+    _tableView.rowHeight = 44.0;
+    _tableView.backgroundColor = UIColor.clearColor;
+    _tableView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     
-    searchBar = [[UISearchBar alloc] init];
-    [searchBar sizeToFit];
-    [searchBar setDelegate:self];
-    //关闭系统自动联想和首字母大写功能
-    [searchBar setAutocapitalizationType:UITextAutocapitalizationTypeNone];
-    [countryCodeTableView setTableHeaderView:searchBar];
+    _searchController = [[UISearchController alloc] initWithSearchResultsController:nil];
+    _searchController.searchResultsUpdater = self;
+    _searchController.dimsBackgroundDuringPresentation = NO;
     
-    searchController = [[UISearchDisplayController alloc] initWithSearchBar:searchBar contentsController:self];
-    [searchController setDelegate:self];
-    searchController.searchResultsDataSource = self;
-    searchController.searchResultsDelegate = self;
-    
-    NSString *plistPathCH = [[NSBundle mainBundle] pathForResource:@"sortedChnames" ofType:@"plist"];
-    NSString *plistPathEN = [[NSBundle mainBundle] pathForResource:@"sortedEnames" ofType:@"plist"];
+    UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, _tableView.bounds.size.width, _searchController.searchBar.bounds.size.height)];
+    [headerView addSubview:_searchController.searchBar];
+    _tableView.tableHeaderView = headerView;
     
     //判断当前系统语言
     if (LanguageIsEnglish) {
-        sortedNameDict = [[NSDictionary alloc] initWithContentsOfFile:plistPathEN];
-    }else{
-        sortedNameDict = [[NSDictionary alloc] initWithContentsOfFile:plistPathCH];
+        NSString *plistPathEN = [[NSBundle mainBundle] pathForResource:@"sortedNameEN" ofType:@"plist"];
+        _sortedNameDict = [[NSDictionary alloc] initWithContentsOfFile:plistPathEN];
+    } else {
+        NSString *plistPathCH = [[NSBundle mainBundle] pathForResource:@"sortedNameCH" ofType:@"plist"];
+        _sortedNameDict = [[NSDictionary alloc] initWithContentsOfFile:plistPathCH];
     }
     
-    indexArray = [[NSArray alloc] initWithArray:[[sortedNameDict allKeys] sortedArrayUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
+    _indexArray = [[NSArray alloc] initWithArray:[[_sortedNameDict allKeys] sortedArrayUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
         return [obj1 compare:obj2];
     }]];
-    NSLog(@"sortedChnamesDict %@",sortedNameDict);
-
 }
 
-//搜索
--(void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText{
-    NSLog(@"%s",__FUNCTION__);
-    [searchResultValuesArray removeAllObjects];
-    
-    for (NSArray *array in [sortedNameDict allValues]) {
-        for (NSString *value in array) {
-            if ([value containsString:searchBar.text]) {
-                [searchResultValuesArray addObject:value];
+- (NSString *)showCodeStringIndex:(NSIndexPath *)indexPath {
+    NSString *showCodeSting;
+    if (_searchController.isActive) {
+        if (_results.count > indexPath.row) {
+            showCodeSting = [_results objectAtIndex:indexPath.row];
+        }
+    } else {
+        if (_indexArray.count > indexPath.section) {
+            NSArray *sectionArray = [_sortedNameDict valueForKey:[_indexArray objectAtIndex:indexPath.section]];
+            if (sectionArray.count > indexPath.row) {
+                showCodeSting = [sectionArray objectAtIndex:indexPath.row];
             }
         }
     }
-    [searchController.searchResultsTableView reloadData];
+    return showCodeSting;
 }
 
-#pragma mark - UITableView 
-//section
--(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
-    if (tableView == countryCodeTableView) {
-        return [sortedNameDict allKeys].count;
-    }else{
+- (void)selectCodeIndex:(NSIndexPath *)indexPath {
+    
+    NSString * originText = [self showCodeStringIndex:indexPath];
+    NSArray  * array = [originText componentsSeparatedByString:@"+"];
+    NSString * countryName = [array.firstObject stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+    NSString * code = array.lastObject;
+    
+    if (self.deleagete && [self.deleagete respondsToSelector:@selector(returnCountryName:code:)]) {
+        [self.deleagete returnCountryName:countryName code:code];
+    }
+    
+    if (self.returnCountryCodeBlock != nil) {
+        self.returnCountryCodeBlock(countryName,code);
+    }
+    
+    _searchController.active = NO;
+    [_searchController.searchBar resignFirstResponder];
+    
+    if (self.navigationController) {
+        [self.navigationController popViewControllerAnimated:YES];
+    } else {
+        [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
+    }
+    
+    NSLog(@"选择国家: %@   代码: %@",countryName,code);
+}
+
+#pragma mark - UISearchResultsUpdating
+- (void)updateSearchResultsForSearchController:(UISearchController *)searchController {
+    if (_results.count > 0) {
+        [_results removeAllObjects];
+    }
+    NSString *inputText = searchController.searchBar.text;
+    __weak __typeof(self)weakSelf = self;
+    [_sortedNameDict.allValues enumerateObjectsUsingBlock:^(NSArray * obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        [obj enumerateObjectsUsingBlock:^(NSString * obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            if ([obj containsString:inputText]) {
+                __strong __typeof(weakSelf) strongSelf = weakSelf;
+                [strongSelf->_results addObject:obj];
+            }
+        }];
+    }];
+    [_tableView reloadData];
+}
+
+#pragma mark - UITableViewDelegate && UITableViewDataSource
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    if (_searchController.isActive) {
         return 1;
+    } else {
+        return [_sortedNameDict allKeys].count;
     }
 }
-//row
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    if (tableView == countryCodeTableView) {
-        
-        NSArray *array = [sortedNameDict objectForKey:[indexArray objectAtIndex:section]];
-        return array.count;
-        
-    }else{
-        return [searchResultValuesArray count];
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    if (_searchController.isActive) {
+         return [_results count];
+    } else {
+        if (_indexArray.count > section) {
+            NSArray *array = [_sortedNameDict objectForKey:[_indexArray objectAtIndex:section]];
+            return array.count;
+        }
+        return 0;
     }
 }
-//height
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    return 44;
-}
-//初始化cell
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    if (tableView == countryCodeTableView) {
-        static NSString *ID1 = @"cellIdentifier1";
-        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:ID1];
-        if (!cell) {
-            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:ID1];
-        }
-        //初始化cell数据!
-        NSInteger section = indexPath.section;
-        NSInteger row = indexPath.row;
-        
-        cell.textLabel.text = [[sortedNameDict objectForKey:[indexArray objectAtIndex:section]] objectAtIndex:row];
-        [cell.textLabel setFont:[UIFont systemFontOfSize:16]];
-        return cell;
-    }else{
-        static NSString *ID2 = @"cellIdentifier2";
-        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:ID2];
-        if (!cell) {
-            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:ID2];
-        }
-        if ([searchResultValuesArray count] > 0) {
-            cell.textLabel.text = [searchResultValuesArray objectAtIndex:indexPath.row];
-        }
-        return cell;
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    NSString *identifier = @"identifier";
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
+    if (!cell) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:identifier];
+        cell.textLabel.font = [UIFont systemFontOfSize:16.0];
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
+    cell.textLabel.text = [self showCodeStringIndex:indexPath];
+    return cell;
 }
-//indexTitle
--(NSArray<NSString *> *)sectionIndexTitlesForTableView:(UITableView *)tableView{
-    if (tableView == countryCodeTableView) {
-        return indexArray;
+
+- (NSArray<NSString *> *)sectionIndexTitlesForTableView:(UITableView *)tableView {
+    if (tableView == _tableView) {
+        return _indexArray;
     }else{
         return nil;
     }
 }
-//
--(NSInteger)tableView:(UITableView *)tableView sectionForSectionIndexTitle:(NSString *)title atIndex:(NSInteger)index{
-    if (tableView == countryCodeTableView) {
+
+- (NSInteger)tableView:(UITableView *)tableView sectionForSectionIndexTitle:(NSString *)title atIndex:(NSInteger)index {
+    if (tableView == _tableView) {
         return index;
-    }else{
+    } else{
         return 0;
     }
 }
 
-- (CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
-{
-    if (tableView == countryCodeTableView) {
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    if (tableView == _tableView) {
         if (section == 0) {
             return 0;
         }
         return 30;
-    }else {
+    } else {
         return 0;
     }
-    
 }
 
-- (NSString *) tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
-{
-    return [indexArray objectAtIndex:section];
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    if (_indexArray.count && _indexArray.count > section) {
+        return [_indexArray objectAtIndex:section];
+    }
+    return nil;
 }
 
 #pragma mark - 选择国际获取代码
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-    NSLog(@"选择相应国家,输出:%@",cell.textLabel.text);
-    
-//    //1.代理传值
-//    if (self.deleagete && [self.deleagete respondsToSelector:@selector(returnCountryCode:)]) {
-//        [self.deleagete returnCountryCode:cell.textLabel.text];
-//    }
-//    [self dismissViewControllerAnimated:YES completion:nil];
-    
-    //2.block传值
-    if (self.returnCountryCodeBlock != nil) {
-        self.returnCountryCodeBlock(cell.textLabel.text);
-    }
-    [self dismissViewControllerAnimated:YES completion:nil];
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    [self selectCodeIndex:indexPath];
 }
-
-
-#pragma mark - 代理传值
--(void)toReturnCountryCode:(returnCountryCodeBlock)block{
-    self.returnCountryCodeBlock = block;
-}
-
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

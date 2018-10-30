@@ -2,15 +2,17 @@
 //  ViewController.m
 //  XWCountryCodeDemo
 //
-//  Created by 邱学伟 on 16/4/19.
-//  Copyright © 2016年 邱学伟. All rights reserved.
+//  Created by 邱学伟 on 2018/10/30.
+//  Copyright © 2018 邱学伟. All rights reserved.
 //
 
 #import "ViewController.h"
 #import "XWCountryCodeController.h"
 
-@interface ViewController ()<XWCountryCodeControllerDelegate>
-@property (strong, nonatomic) IBOutlet UILabel *countryCodeLB;
+@interface ViewController () <XWCountryCodeControllerDelegate> {
+    
+    __weak IBOutlet UILabel *showCodeLB;
+}
 
 @end
 
@@ -18,30 +20,28 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view, typically from a nib.
+    self.navigationItem.title = @"国家代码演示Demo";
 }
+
 - (IBAction)countryCode:(UIButton *)sender {
-    NSLog(@"进入选择国际代码界面");
-    XWCountryCodeController *CountryCodeVC = [[XWCountryCodeController alloc] init];
-    CountryCodeVC.deleagete = self;
     
-    //block
-    [CountryCodeVC toReturnCountryCode:^(NSString *countryCodeStr) {
-        [self.countryCodeLB setText:countryCodeStr];
-    }];
+    XWCountryCodeController *countryCodeVC = [[XWCountryCodeController alloc] init];
+//    countryCodeVC.deleagete = self;
     
-    [self presentViewController:CountryCodeVC animated:YES completion:nil];
+    __weak __typeof(self)weakSelf = self;
+    countryCodeVC.returnCountryCodeBlock = ^(NSString *countryName, NSString *code) {
+        __strong __typeof(weakSelf) strongSelf = weakSelf;
+        strongSelf->showCodeLB.text = [NSString stringWithFormat:@"国家: %@  代码: %@",countryName,code];
+    };
+
+    [self.navigationController pushViewController:countryCodeVC animated:YES];
+//    [self presentViewController:countryCodeVC animated:YES completion:nil];
 }
 
-//1.代理传值
 #pragma mark - XWCountryCodeControllerDelegate
--(void)returnCountryCode:(NSString *)countryCode{
-    [self.countryCodeLB setText:countryCode];
+- (void)returnCountryName:(NSString *)countryName code:(NSString *)code {
+    showCodeLB.text = [NSString stringWithFormat:@"国家: %@  代码: %@",countryName,code];
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
 
 @end

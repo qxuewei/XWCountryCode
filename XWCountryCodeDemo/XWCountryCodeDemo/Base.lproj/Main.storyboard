@@ -1,9 +1,12 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10116" systemVersion="15E65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14313.18" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="txb-8Y-zMs">
+    <device id="retina3_5" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
-        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14283.14"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
         <!--View Controller-->
@@ -11,105 +14,68 @@
             <objects>
                 <viewController id="BYZ-38-t0r" customClass="ViewController" sceneMemberID="viewController">
                     <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
-                        <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
+                        <viewControllerLayoutGuide type="top" id="e5C-gU-YgB"/>
+                        <viewControllerLayoutGuide type="bottom" id="n6K-mp-py7"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8UD-nQ-mh5">
-                                <rect key="frame" x="-23" y="-15" width="46" height="30"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HRt-OK-cun">
+                                <rect key="frame" x="55" y="220" width="210" height="40"/>
+                                <color key="backgroundColor" red="0.99942404029999998" green="0.98555368190000003" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="30" id="9gi-Ii-1ze"/>
-                                    <constraint firstAttribute="width" constant="157" id="wuq-An-mIv"/>
+                                    <constraint firstAttribute="height" constant="40" id="cyb-Zx-yGc"/>
+                                    <constraint firstAttribute="width" constant="210" id="tjN-d5-cju"/>
                                 </constraints>
-                                <state key="normal" title="选择国家"/>
-                                <variation key="default">
-                                    <mask key="constraints">
-                                        <exclude reference="9gi-Ii-1ze"/>
-                                        <exclude reference="wuq-An-mIv"/>
-                                    </mask>
-                                </variation>
-                                <variation key="widthClass=compact">
-                                    <mask key="constraints">
-                                        <include reference="9gi-Ii-1ze"/>
-                                        <include reference="wuq-An-mIv"/>
-                                    </mask>
-                                </variation>
+                                <state key="normal" title="点击跳转国家代码选择控制器">
+                                    <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
                                 <connections>
-                                    <action selector="countryCode:" destination="BYZ-38-t0r" eventType="touchUpInside" id="eI2-2f-FdG"/>
+                                    <action selector="countryCode:" destination="BYZ-38-t0r" eventType="touchUpInside" id="wCC-1Q-IaA"/>
                                 </connections>
                             </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="国家代码" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="p97-KM-OOQ">
-                                <rect key="frame" x="-42" y="-21" width="42" height="21"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="32" id="D3r-TW-Mzg"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="所选择的国家代码在此显示" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FSj-eU-hmn">
+                                <rect key="frame" x="37.5" y="340" width="245" height="24"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <color key="textColor" red="1" green="0.14913141730000001" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
-                                <variation key="default">
-                                    <mask key="constraints">
-                                        <exclude reference="D3r-TW-Mzg"/>
-                                    </mask>
-                                </variation>
-                                <variation key="widthClass=compact">
-                                    <mask key="constraints">
-                                        <include reference="D3r-TW-Mzg"/>
-                                    </mask>
-                                </variation>
                             </label>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="p97-KM-OOQ" firstAttribute="top" secondItem="8UD-nQ-mh5" secondAttribute="bottom" constant="8" id="2VA-Dn-3Lb">
-                                <variation key="widthClass=compact" constant="90"/>
-                            </constraint>
-                            <constraint firstItem="p97-KM-OOQ" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="4vq-ij-KSy">
-                                <variation key="widthClass=compact" constant="-4"/>
-                            </constraint>
-                            <constraint firstAttribute="trailingMargin" secondItem="p97-KM-OOQ" secondAttribute="trailing" id="BWl-lp-QZ6">
-                                <variation key="widthClass=compact" constant="-4"/>
-                            </constraint>
-                            <constraint firstItem="8UD-nQ-mh5" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="yUK-Gr-9aK"/>
-                            <constraint firstItem="8UD-nQ-mh5" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="zFh-OF-qR8"/>
+                            <constraint firstItem="HRt-OK-cun" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="8Ms-ns-mXn"/>
+                            <constraint firstItem="FSj-eU-hmn" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="M5J-Wb-4It"/>
+                            <constraint firstItem="HRt-OK-cun" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="MWK-tH-LoJ"/>
+                            <constraint firstItem="FSj-eU-hmn" firstAttribute="top" secondItem="HRt-OK-cun" secondAttribute="bottom" constant="80" id="NyJ-h7-3Ju"/>
                         </constraints>
-                        <variation key="default">
-                            <mask key="subviews">
-                                <exclude reference="8UD-nQ-mh5"/>
-                                <exclude reference="p97-KM-OOQ"/>
-                            </mask>
-                            <mask key="constraints">
-                                <exclude reference="yUK-Gr-9aK"/>
-                                <exclude reference="zFh-OF-qR8"/>
-                                <exclude reference="2VA-Dn-3Lb"/>
-                                <exclude reference="4vq-ij-KSy"/>
-                                <exclude reference="BWl-lp-QZ6"/>
-                            </mask>
-                        </variation>
-                        <variation key="widthClass=compact">
-                            <mask key="subviews">
-                                <include reference="8UD-nQ-mh5"/>
-                                <include reference="p97-KM-OOQ"/>
-                            </mask>
-                            <mask key="constraints">
-                                <include reference="yUK-Gr-9aK"/>
-                                <include reference="zFh-OF-qR8"/>
-                                <include reference="2VA-Dn-3Lb"/>
-                                <include reference="4vq-ij-KSy"/>
-                                <include reference="BWl-lp-QZ6"/>
-                            </mask>
-                        </variation>
                     </view>
-                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
+                    <navigationItem key="navigationItem" id="XwN-SF-HN0"/>
                     <connections>
-                        <outlet property="countryCodeLB" destination="p97-KM-OOQ" id="Vcp-gc-6KX"/>
+                        <outlet property="showCodeLB" destination="FSj-eU-hmn" id="SfR-BT-6pF"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="279" y="319"/>
+            <point key="canvasLocation" x="1001" y="791"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="VHS-5g-Mb4">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="txb-8Y-zMs" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="q6b-85-bPV">
+                        <rect key="frame" x="0.0" y="20" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="BYZ-38-t0r" kind="relationship" relationship="rootViewController" id="uoq-7Z-V3Y"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="zE5-iU-0MM" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="133.59999999999999" y="791.15442278860576"/>
         </scene>
     </scenes>
 </document>
